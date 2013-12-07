@@ -5,27 +5,61 @@
 #+DESCRIPTION: the file containing the code and the comments
 #+KEYWORDS:  org-mode Emacs annotate notes side-notes
 #+SEQ_TODO: FIXME-BUG FIXME-LIMITATION FIXED
-
+#+STARTUP: nofninline
 #+OPTIONS: toc:nil
 
 
 #+BEGIN_ABSTRACT
-org-annotate is a project to handle, in an org file, notes called interchangeably =annotations=, ~side notes~, or =margin notes=. The purpose and the way it works is different, complementary to footnote. =Annotations= are supposed to be created in a read-only document, and then to stay constantly under your eyes, exactly as you would have a book with hand-written side notes. You take notes, you cannot change the text of the book ; each time you read the page were taht you annotated, the notes are under your eyes.
-currently under development
+org-annotate is a project to handle, in an org file, notes called interchangeably =annotations=, ~side notes~, or =margin notes=. The purpose and the way it works is different, complementary to footnote. =Annotations= are supposed to be created in a read-only document, and then to stay constantly under your eyes, exactly as you would have a book with hand-written side notes. You take notes, you cannot change the text of the book ; each time you read the page that you annotated, the notes are under your eyes.
+Currently under development, per [2013-12-08 dim.] in alpha status.
 #+END_ABSTRACT
 #+TOC: headlines 2
 
 
 * introduction to org-annotate
+:PROPERTIES:
+:INITIAL_DATE: [2013-12-08 dim.]
+:END:
 
 ** vocabulary
-- annotation, side note, margin note :: a note that you take manually to comment your text. Every note is time-stamped and signed.
+- annotation, side note, margin note :: A note that you take manually to comment your text. Each note is time-stamped and signed.
 
-- footnote :: remains here the notes that you take with the invaluable native org footnotes. See [[info:org#Footnotes][(org) Footnotes]] to know more. (info "(org) Footnotes")
+- footnote :: Remains here the notes that you create with the invaluable native org footnotes. See [[info:org#Footnotes][(org) Footnotes]] to know more. (info "(org) Footnotes")
 
-- reference text :: the text that you want to annotate. org-annotate provides facilities to keep it unchaged, while offering functions to annotate it and keep
+- reference text :: The text that you want to annotate. org-annotate provides facilities to keep it unchanged, while offering functions to annotate it and read both the text and the corresponding notes.
 
 
 
 ** purpose
-The purpose is to work on a text that you do not want to change, because it serves as reference text. You do not want neither to add footnotes, for the same reasons. As if the text was printed on paper, you want to annotate it, and keep the notes constantly under the eyes as you travel through the corresponding text.
+The purpose of org-annotate is to work on a text that you do not want to change, because it serves as reference text. There is a strong emphasis on considering your text as a reference that is protected against any change. A consequence of that is that adding footnotes is an option that is not considered. As if the text was printed on paper, you wont change the text in any way, but want to annotate it. You then will be able to keep the notes constantly under your eyes as you travel through the corresponding text.
+
+But as you are in org-mode, you have tremendous possibilities, and org-annotate aims at taking advantages of them. Annotations will offer you everything that headers offer, especially properties and tags. For example, every annotation is time stamped and signed, in a property drawer.
+
+Properties allow every kind of filtering of the notes. For example you'll be able to read your text with, under your eyes, notes filtered on some selection criteria : only the notes signed by "John Doe", or notes taken between date_1 and date_2, or any kind of filtering criteria you derive from properties you may have defined when taking notes.
+
+
+
+** how it works
+For simplicity reasons, org-annotate will as far as possible mimicate the footnotes capabilities natively offered by org-mode.
+
+For example, to create a footnote you usually use =org-footnote-new=[fn:1]. For annotations, you will invoke =org-annotate-new=. It won't prompt for a label, as the reference of the note is automatically handled for you, as will the time stamp be.
+
+The notes are kept under your eyes in a separate, synchronized window.
+
+The notes are stored in a separate outline heading in the file of the reference text. =Org-annotate= handles the necessary actions to keep the reference text read-only, while you are able to write annotations at a separate place in the same file.
+
+[fn:1] 
+org-footnote-new
+
+Insert a new footnote. This command prompts for a label. If this is a label referencing an existing label, only insert the label. If the footnote label is empty or new, let the user edit the definition of the footnote.
+
+* the code
+
+** making the reference text read-only
+
+** creating the annotation-section, read-writable
+
+** creating annotations
+
+** reading the reference text while keeping the annotations under your eyes
+
