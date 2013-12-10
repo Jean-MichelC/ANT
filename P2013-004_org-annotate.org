@@ -16,6 +16,13 @@ Currently under development, per [2013-12-08 dim.] in alpha status.
 #+TOC: headlines 2
 
 * FIXME-BUG le git ne push pas ... !!! donc absence de sauvegarde !
+* FIXME-BUG Wual crash ... !! donc absence de sauvergarde
+* quel nom pour le projet ? ANNOTATE ? ANT ?
+- ANNOTATE : ANnotate is NOT A Text E... ?
+- ANNOTATE : ANnotate is Not Only for Text Annotations T E
+-
+
+
 
 * introduction to org-annotate
 :PROPERTIES:
@@ -57,6 +64,25 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
 * the code
 
 ** making the reference text read-only
+- create a special property `:REF-STATUS:' that take the following values:
+  - READ-ONLY (default)
+  - READ-WRITE
+- create a function that applies the read-only/read-write status of a whole header
+- when opening the org file, apply that function on every subtree, so that subtrees that serves as reference are read-only
+#+BEGIN_SRC elisp
+(defun make-subtree-read-only ....
+.............. s'inspirer de (defun make-region-read-only (start end)
+  (interactive "*r")
+  (let ((inhibit-read-only t))
+    (put-text-property start end 'read-only t)))
+
+(defun make-subtree-read-write ...
+.... est-elle-utile ? si oui, s'isnpirer de (defun make-region-read-write (start end)
+  (interactive "*r")
+  (let ((inhibit-read-only t))
+    (put-text-property start end 'read-only nil)))
+
+#+END_SRC
 
 ** creating the annotation-section, read-writable
 
