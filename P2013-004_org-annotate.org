@@ -16,11 +16,11 @@ Currently under development, per [2013-12-08 dim.] in alpha status.
 #+TOC: headlines 2
 
 * FIXME-BUG le git ne push pas ... !!! donc absence de sauvegarde !
-* FIXME-BUG Wual crash ... !! donc absence de sauvergarde
+* FIXME-BUG Wuala crashe par manque de mémoire ... !! donc absence de sauvergarde
 * quel nom pour le projet ? ANNOTATE ? ANT ?
 - ANNOTATE : ANnotate is NOT A Text E... ?
 - ANNOTATE : ANnotate is Not Only for Text Annotations T E
--
+- ANT : ANT is Not AN ANoTation ....
 
 
 
@@ -70,19 +70,54 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
 - create a function that applies the read-only/read-write status of a whole header
 - when opening the org file, apply that function on every subtree, so that subtrees that serves as reference are read-only
 #+BEGIN_SRC elisp
-(defun make-subtree-read-only ....
-.............. s'inspirer de (defun make-region-read-only (start end)
-  (interactive "*r")
-  (let ((inhibit-read-only t))
-    (put-text-property start end 'read-only t)))
+  (defun ant-put-text-property-subtree (property value)
+    "Set one property of the text for the current subtree.
 
-(defun make-subtree-read-write ...
-.... est-elle-utile ? si oui, s'isnpirer de (defun make-region-read-write (start end)
-  (interactive "*r")
-  (let ((inhibit-read-only t))
-    (put-text-property start end 'read-only nil)))
+  Applies `put-text-property' to the current subtree"
+  (save-excursion
+    (org-mark-subtree-1)
+    (let ((start (point))
+          (end (progn (exchange-point-and-mark) (point)))
+          (inhibit-read-only t))
+      (put-text-property start end property value))))
 
+  (defun org-mark-subtree-1 ()
+    "shift the `org-mark-subtree' selection by one position backward"
+  (interactive)                           ; only for debug
+    (org-mark-subtree)
+    (backward-char)
+    (exchange-point-and-mark)
+    (backward-char)
+    (exchange-point-and-mark))
+
+  (defun ant-make-subtree-read-only ()
+    "Make a subtree read-only
+
+  use `jmc-org-make-subtree-read-write' for the counter-effect"
+    (interactive)
+    (jmc-org-put-text-property-subtree 'read-only t))
+
+
+  (defun ant-make-subtree-read-write ()
+    "Make a subtree read-only
+
+  use `jmc-org-make-subtree-read-write' for the counter-effect"
+    (interactive)
+    (jmc-org-put-text-property-subtree 'read-only nil))
+
+  (defun ant-apply-ant-read-subtree-status ()
+    "In an org-mode file, applies the read-only or read-write status of the current subtree
+
+  based on the :ANT-READ-ONLY: property of the header.
+  Values are t and nil"
+    (interactive)
+    (if (org-entry-get nil "ANT-READ-ONLY")
+        (ant-make-subtree-read-only)
+      (ant-make-subtree-read-write)))
 #+END_SRC
+
+#+RESULTS:
+: ant-apply-ant-read-subtree-status
 
 ** creating the annotation-section, read-writable
 
