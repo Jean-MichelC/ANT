@@ -93,17 +93,17 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
   (defun ant-make-subtree-read-only ()
     "Make a subtree read-only
 
-  use `jmc-org-make-subtree-read-write' for the counter-effect"
+  use `ant-make-subtree-read-write' for the counter-effect"
     (interactive)
-    (jmc-org-put-text-property-subtree 'read-only t))
+    (ant-put-text-property-subtree 'read-only t))
 
 
   (defun ant-make-subtree-read-write ()
     "Make a subtree read-only
 
-  use `jmc-org-make-subtree-read-write' for the counter-effect"
+  use `ant-make-subtree-read-write' for the counter-effect"
     (interactive)
-    (jmc-org-put-text-property-subtree 'read-only nil))
+    (ant-put-text-property-subtree 'read-only nil))
 
   (defun ant-apply-ant-read-subtree-status ()
     "In an org-mode file, applies the read-only or read-write status of the current subtree
@@ -114,6 +114,17 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
     (if (org-entry-get nil "ANT-READ-ONLY")
         (ant-make-subtree-read-only)
       (ant-make-subtree-read-write)))
+
+  (defun ant-entry-force-put-and-apply (value)
+
+  "Set :ANT-READ-ONLY: property to value for current entry, even if the entry is read-only
+
+  Then applies the new status"
+
+  (ant-make-subtree-read-write)
+  (org-entry-put nil "ANT-READ-ONLY" value))
+
+
 #+END_SRC
 
 #+RESULTS:
