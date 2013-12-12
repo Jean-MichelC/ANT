@@ -4,7 +4,7 @@
 #+EMAIL:
 #+DESCRIPTION: the file containing the code and the comments
 #+KEYWORDS:  org-mode Emacs annotate notes side-notes
-#+SEQ_TODO: FIXME-BUG FIXME-LIMITATION FIXED
+#+SEQ_TODO: FIXME FIXME-BUG FIXME-LIMITATION FIXED
 #+STARTUP: nofninline
 #+OPTIONS: toc:nil
 
@@ -14,6 +14,12 @@ org-annotate is a project to handle, in an org file, notes called =annotations=.
 Currently under development, per [2013-12-08 dim.] in alpha status.
 #+END_ABSTRACT
 #+TOC: headlines 2
+
+* FIXME on git-hub, the abstract does not appear !
+=This is a manual copy-paste of the abstract above - do not edit it=
+org-annotate is a project to handle, in an org file, notes called =annotations=. The purpose and the way it works is different, complementary to the =org-footnote= facility. =Annotations= are supposed to be created in a read-only document, and then to stay constantly under your eyes, exactly as you would have a book with hand-written side notes. You take notes, you cannot change the text of the book ; each time you read the page that you annotated, the notes are under your eyes.
+Currently under development, per [2013-12-08 dim.] in alpha status.
+
 
 * FIXME-BUG le git ne push pas ... !!! donc absence de sauvegarde !
 * FIXME-BUG Wuala crashe par manque de mémoire ... !! donc absence de sauvergarde
@@ -67,7 +73,7 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
 
 ** FIXME-LIMITATION définir le `require' nécessaire à faire fonctionner tout cela ...
 
-** per-file initial steps
+** FIXME per-file initial steps
 Get any org file can be treated as a reference text by following theses steps :
 - put the following line at the to of your file
 #+BEGIN_EXAMPLE
