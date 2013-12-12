@@ -11,14 +11,14 @@
 
 #+BEGIN_ABSTRACT
 org-annotate is a project to handle, in an org file, notes called =annotations=. The purpose and the way it works is different, complementary to the =org-footnote= facility. =Annotations= are supposed to be created in a read-only document, and then to stay constantly under your eyes, exactly as you would have a book with hand-written side notes. You take notes, you cannot change the text of the book ; each time you read the page that you annotated, the notes are under your eyes.
-Currently under development, per [2013-12-08 dim.] in alpha status.
+=Currently under development, per [2013-12-08 dim.] in alpha status.=
 #+END_ABSTRACT
 #+TOC: headlines 2
 
 * FIXME on git-hub, the abstract does not appear !
 =This is a manual copy-paste of the abstract above - do not edit it=
 org-annotate is a project to handle, in an org file, notes called =annotations=. The purpose and the way it works is different, complementary to the =org-footnote= facility. =Annotations= are supposed to be created in a read-only document, and then to stay constantly under your eyes, exactly as you would have a book with hand-written side notes. You take notes, you cannot change the text of the book ; each time you read the page that you annotated, the notes are under your eyes.
-Currently under development, per [2013-12-08 dim.] in alpha status.
+=Currently under development, per [2013-12-08 dim.] in alpha status.=
 
 
 * FIXME-BUG le git ne push pas ... !!! donc absence de sauvegarde !
@@ -51,6 +51,8 @@ But as you are in org-mode, you have tremendous possibilities, and org-annotate 
 
 Properties allow every kind of filtering of the notes. For example you'll be able to read your text with, under your eyes, notes filtered on some selection criteria : only the notes signed by "John Doe", or notes taken between date_1 and date_2, or any kind of filtering criteria you derive from properties you may have defined when taking notes.
 
+** requirements
+You have to know emacs org-mode. If not, learn it first. http://orgmode.org/ is the right place to start.
 
 
 ** how it works
@@ -69,25 +71,132 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
 
 
 
-* initial steps
+* FIXME is this usefull ? /// initial steps
 
 ** FIXME-LIMITATION définir le `require' nécessaire à faire fonctionner tout cela ...
 
 ** FIXME per-file initial steps
-Get any org file can be treated as a reference text by following theses steps :
-- put the following line at the to of your file
-#+BEGIN_EXAMPLE
-# -*- mode: Org; eval: (org-map-entries 'ant-apply-ant-read-subtree-status "LEVEL=1" nil) -*- #
-#+END_EXAMPLE
-This code is for initializing the file, getting the sections declared as read-only effectively read-only
 
-- set
+*** ANT works on org files
+- open your org file
+
+*** Make headers visible for the ANT functions
+Set the following properties on every header you want to be able to apply ANT functions:
+- set the property ANT-REF to either REFERENCE or ANNOTATION or anything else
+  - the value REF declares the whole header as a reference portion of text
+  - ant acts only on those headers that have the REFERENCE status
+- set the property ANT-READ-ONLY to either t or nil
+
+*** Get your org file treated as a reference text
+By putting the following line at the top of your file :
+#+BEGIN_EXAMPLE
+# -*- mode: Org; eval: (org-map-entries 'ant-apply-read-subtree-status "LEVEL=1" nil) -*- #
+#+END_EXAMPLE
+This code is for initializing the file everytime you'll open it, getting the sections declared as read-only effectively read-only
 
 *** FIXME-LIMITATION ne faut-il pas créer 2 properties ?
 - une ANT-READ-ONLY qui donne le statut read-write à appliquer
 - une ANT-TYPE qui déclare la section en REF ou en ANNOTATION ou autre
 
+* How to use it
+
+** FIXME trial with ditaa
+#+name: ditaa-ant-howto
+#+BEGIN_SRC ditaa :file ditaa-ant-howto.png :cmdline -r
+
+   +-------------------+
+   |                   |
+   |  open your +------+-----------------+
+   |  org file  |      |                 |
+   |            | A    |                 |
+   +------------+------+                 |
+                | B                      |
+   +------------+------+                 |
+   |            |      |                 |
+   |            | C    |                 |
+   |            +------+-----------------+
+   |              D    |
+   +-------------------+
+                                         +------------+
+                                         |            |
+                                         |            |
+                                         |            |
+                                         |            |
+                                         |            |
+                                         |            |
+                                         |            |
+                                         +------------+
+#+END_SRC
+
+#+RESULTS: ditaa-ant-howto
+[[file:ditaa-ant-howto.png]]
+
+
+
+** FIXME trial 1 with plantuml ///
+
+#+name: plantuml-ant-howto
+#+BEGIN_SRC plantuml :file plantuml-ant-howto.png
+
+@startuml
+title ANT how-to\nphase 1\ninitialise
+
+(*) --> "open your org file\nANT works as a minor mode for org mode"
+-->"initialise all headers with the ANT-REF property\nset ANT-REF either to value REFERENCE or value ANNOTATION"
+--> (*)
+
+@enduml
+
+
+
+
+
+
+#+END_SRC
+
+#+RESULTS: plantuml-ant-howto
+[[file:plantuml-ant-howto.png]]
+
+** FIXME trial 2 with plantuml ///
+
+#+name: plantuml-ant-howto
+#+BEGIN_SRC plantuml :file plantuml-ant-howto.png
+
+@startuml
+title ANT how-to\nphase 1\ninitialise
+
+
+
+@enduml
+
+
+
+
+
+
+#+END_SRC
+
+
+
+
+
+
+
 * the code
+
+** initializing a ref file
+- automate the steps described here [[*FIXME%20per-file%20initial%20steps][per-file initial steps]]
+  - working on the current buffer
+  - checking that this an org-file
+  - inserting the header to [[*Get%20your%20org%20file%20treated%20as%20a%20reference%20text][get your org file treated as a reference text]]
+*** the code
+#+name: initialize-a-ref-file
+
+
+
+
+
+
 
 ** making the reference text read-only
 - create a special property `:REF-STATUS:' that take the following values:
@@ -131,11 +240,11 @@ This code is for initializing the file, getting the sections declared as read-on
     (interactive)
     (ant-put-text-property-subtree 'read-only nil))
 
-  (defun ant-apply-ant-read-subtree-status ()
+  (defun ant-apply-read-subtree-status ()
     "In an org-mode file, applies the read-only or read-write status of the current subtree
 
   based on the :ANT-READ-ONLY: property of the header.
-  Values are t and nil"
+  Acceptable values are t and nil"
     (interactive)
     (if (org-entry-get nil "ANT-READ-ONLY")
         (ant-make-subtree-read-only)
@@ -150,13 +259,13 @@ This code is for initializing the file, getting the sections declared as read-on
 
     (ant-make-subtree-read-write)
     (org-entry-put nil "ANT-READ-ONLY" value)
-    (ant-apply-ant-read-subtree-status))
+    (ant-apply-read-subtree-status))
 
 
 #+END_SRC
 
 #+RESULTS:
-: ant-apply-ant-read-subtree-status
+: ant-apply-read-subtree-status
 
 ** creating the annotation-section, read-writable
 
