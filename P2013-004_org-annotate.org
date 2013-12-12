@@ -17,7 +17,7 @@ Currently under development, per [2013-12-08 dim.] in alpha status.
 
 * FIXME-BUG le git ne push pas ... !!! donc absence de sauvegarde !
 * FIXME-BUG Wuala crashe par manque de mémoire ... !! donc absence de sauvergarde
-* quel nom pour le projet ? ANNOTATE ? ANT ?
+* quel nom pour le projet ? ANNOTATE ? ANT ? REF-TEXT ?
 - ANNOTATE : ANnotate is NOT A Text E... ?
 - ANNOTATE : ANnotate is Not Only for Text Annotations T E
 - ANT : ANT is Not AN ANoTation ....
@@ -61,6 +61,26 @@ org-footnote-new
 
 Insert a new footnote. This command prompts for a label. If this is a label referencing an existing label, only insert the label. If the footnote label is empty or new, let the user edit the definition of the footnote.
 
+
+
+* initial steps
+
+** FIXME-LIMITATION définir le `require' nécessaire à faire fonctionner tout cela ...
+
+** per-file initial steps
+Get any org file can be treated as a reference text by following theses steps :
+- put the following line at the to of your file
+#+BEGIN_EXAMPLE
+# -*- mode: Org; eval: (org-map-entries 'ant-apply-ant-read-subtree-status "LEVEL=1" nil) -*- #
+#+END_EXAMPLE
+This code is for initializing the file, getting the sections declared as read-only effectively read-only
+
+- set
+
+*** FIXME-LIMITATION ne faut-il pas créer 2 properties ?
+- une ANT-READ-ONLY qui donne le statut read-write à appliquer
+- une ANT-TYPE qui déclare la section en REF ou en ANNOTATION ou autre
+
 * the code
 
 ** making the reference text read-only
@@ -74,16 +94,16 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
     "Set one property of the text for the current subtree.
 
   Applies `put-text-property' to the current subtree"
-  (save-excursion
-    (org-mark-subtree-1)
-    (let ((start (point))
-          (end (progn (exchange-point-and-mark) (point)))
-          (inhibit-read-only t))
-      (put-text-property start end property value))))
+    (save-excursion
+      (org-mark-subtree-1)
+      (let ((start (point))
+            (end (progn (exchange-point-and-mark) (point)))
+            (inhibit-read-only t))
+        (put-text-property start end property value))))
 
   (defun org-mark-subtree-1 ()
     "shift the `org-mark-subtree' selection by one position backward"
-  (interactive)                           ; only for debug
+    (interactive)                           ; only for debug
     (org-mark-subtree)
     (backward-char)
     (exchange-point-and-mark)
@@ -117,12 +137,14 @@ Insert a new footnote. This command prompts for a label. If this is a label refe
 
   (defun ant-entry-force-put-and-apply (value)
 
-  "Set :ANT-READ-ONLY: property to value for current entry, even if the entry is read-only
+    "Set :ANT-READ-ONLY: property to value for current entry, even if the entry is read-only
 
   Then applies the new status"
+    (interactive "sANT-READ-ONLY value:")
 
-  (ant-make-subtree-read-write)
-  (org-entry-put nil "ANT-READ-ONLY" value))
+    (ant-make-subtree-read-write)
+    (org-entry-put nil "ANT-READ-ONLY" value)
+    (ant-apply-ant-read-subtree-status))
 
 
 #+END_SRC
